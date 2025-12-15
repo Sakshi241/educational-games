@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔢 Number Match</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Comic Sans MS", "Arial", sans-serif;
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #2f2f2f;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 1100px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.16);
+            padding: 24px;
+        }
+
+        .header { text-align: center; margin-bottom: 16px; }
+        .header h1 {
+            font-size: 2.4em;
+            color: #2a9d8f;
+            text-shadow: 1px 2px 6px rgba(0, 0, 0, 0.12);
+        }
+        .header p { color: #555; margin-top: 6px; font-size: 1.1em; }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 10px 0 16px;
+        }
+
+        .info-box {
+            background: #f7f7f7;
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+            color: #2a9d8f;
+        }
+
+        .target-number {
+            font-size: 2em;
+            color: #e76f51;
+            font-weight: bold;
+        }
+
+        .message {
+            font-size: 1.2em;
+            font-weight: bold;
+            min-height: 28px;
+        }
+        .message.success { color: #2e8b57; }
+        .message.error { color: #d32f2f; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin: 16px 0 10px;
+        }
+
+        .card {
+            border-radius: 14px;
+            background: #fefefe;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            border: 3px solid transparent;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.correct { border-color: #2e8b57; animation: pop 0.35s ease; }
+        .card.wrong { border-color: #d32f2f; animation: shake 0.35s ease; }
+
+        .dots {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            justify-items: center;
+            align-items: center;
+            margin: 0 auto 10px;
+            max-width: 120px;
+        }
+
+        .dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #2a9d8f;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .card .label {
+            font-weight: bold;
+            color: #444;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .btn:active { transform: scale(0.98); }
+
+        .btn-primary { background: linear-gradient(135deg, #2a9d8f, #2f9e44); box-shadow: 0 6px 16px rgba(42, 157, 143, 0.28); }
+        .btn-primary:hover { box-shadow: 0 10px 20px rgba(42, 157, 143, 0.38); }
+
+        .btn-ghost { background: #fff; color: #2a9d8f; border: 2px solid #2a9d8f; }
+        .btn-ghost:hover { box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1); }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div style="text-align:left;margin-bottom:12px;">
+            <a href="index.html" style="display:inline-block;padding:10px 16px;background:#fff;color:#2a9d8f;border:2px solid #2a9d8f;border-radius:12px;text-decoration:none;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,0.12);">← Back to Home</a>
+        </div>
+        <div class="header">
+            <h1>🔢 Number Match</h1>
+            <p>Match numbers to quantities. Build counting skills with cheerful visuals and supportive cues. Ages 5–7</p>
+        </div>
+
+        <div class="top-bar">
+            <div class="info-box">Score: <span id="score">0</span></div>
+            <div class="info-box">Find: <span class="target-number" id="targetNumber">1</span></div>
+            <div class="message" id="message"></div>
+        </div>
+
+        <div class="grid" id="grid"></div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="nextBtn">Next Number</button>
+            <button class="btn btn-ghost" id="resetBtn">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let target = null;
+        let score = 0;
+
+        const gridEl = document.getElementById("grid");
+        const targetNumberEl = document.getElementById("targetNumber");
+        const messageEl = document.getElementById("message");
+        const scoreEl = document.getElementById("score");
+
+        function shuffle(array) {
+            return array
+                .map(value => ({ value, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(({ value }) => value);
+        }
+
+        function chooseTarget() {
+            const pool = shuffle(numbers).slice(0, 6);
+            target = pool[Math.floor(Math.random() * pool.length)];
+            renderGrid(pool);
+            targetNumberEl.textContent = target;
+            messageEl.textContent = "";
+            messageEl.className = "message";
+        }
+
+        function renderGrid(pool) {
+            gridEl.innerHTML = "";
+            pool.forEach(num => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <div class="dots" aria-hidden="true">${renderDots(num)}</div>
+                    <div class="label">${num === 1 ? "One" : num === 2 ? "Two" : num === 3 ? "Three" : num === 4 ? "Four" : num === 5 ? "Five" : num === 6 ? "Six" : num === 7 ? "Seven" : num === 8 ? "Eight" : "Nine"}</div>
+                `;
+                card.addEventListener("click", () => handleGuess(card, num));
+                gridEl.appendChild(card);
+            });
+        }
+
+        function renderDots(count) {
+            let dots = "";
+            for (let i = 0; i < count; i++) {
+                dots += '<div class="dot"></div>';
+            }
+            return dots;
+        }
+
+        function handleGuess(card, num) {
+            if (target === null) return;
+            const isCorrect = num === target;
+            card.classList.remove("correct", "wrong");
+            void card.offsetWidth; // restart animation
+            if (isCorrect) {
+                score += 1;
+                scoreEl.textContent = score;
+                card.classList.add("correct");
+                messageEl.textContent = "Great job!";
+                messageEl.className = "message success";
+                setTimeout(chooseTarget, 700);
+            } else {
+                card.classList.add("wrong");
+                messageEl.textContent = "Try again!";
+                messageEl.className = "message error";
+            }
+        }
+
+        document.getElementById("nextBtn").addEventListener("click", chooseTarget);
+        document.getElementById("resetBtn").addEventListener("click", () => {
+            score = 0;
+            scoreEl.textContent = score;
+            chooseTarget();
+        });
+
+        // Initialize
+        chooseTarget();
+    </script>
+</body>
+</html>
+

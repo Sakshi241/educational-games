@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🅿️ Alphabet Parking Game</title>
+    <title>Kids Educational Games - Learn • Play • Grow</title>
     <style>
+        /* ---------- Base Reset ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -13,575 +14,283 @@
 
         body {
             font-family: 'Comic Sans MS', 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8ec5fc 0%, #e0c3fc 50%, #ffd8a8 100%);
             min-height: 100vh;
+            color: #2f2f2f;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        /* ---------- Layout Containers ---------- */
+        header {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 22px 16px;
+            text-align: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            border-bottom: 5px solid #ffb703;
+        }
+
+        header h1 {
+            font-size: 3em;
+            color: #5a3fc0;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.12);
+        }
+
+        header .tagline {
+            font-size: 1.3em;
+            color: #fb8500;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1120px;
+            margin: 12px auto 16px;
+            padding: 0 12px;
+        }
+
+        .age-sections {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        .age-section {
+            margin-bottom: 0;
+            flex: 1 1 50%;
+            min-width: 320px;
+            max-width: calc(50% - 8px);
+        }
+
+        .age-heading {
+            font-size: 1.5em;
+            color: #5a3fc0;
+            margin-bottom: 8px;
+            display: inline-block;
+            padding: 6px 10px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ---------- Grid & Cards ---------- */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.12);
+            transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+            border: 3px solid transparent;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: #333;
-        }
-
-        .game-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        h1 {
-            text-align: center;
-            color: #667eea;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .score-board {
-            background: #f0f0f0;
-            padding: 15px 25px;
-            border-radius: 15px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .level-selector {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .level-btn {
-            padding: 10px 20px;
-            border: 2px solid #667eea;
-            background: white;
-            color: #667eea;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .level-btn:hover, .level-btn.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .car-display {
-            text-align: center;
-            margin: 30px 0;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 15px;
-        }
-
-        .current-letter {
-            font-size: 4em;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .car {
-            width: 120px;
-            height: 80px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            border-radius: 15px 15px 5px 5px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3em;
-            font-weight: bold;
-            color: white;
-            cursor: grab;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s;
-            position: relative;
-            user-select: none;
-        }
-
-        .car:active {
-            cursor: grabbing;
-            transform: scale(1.1);
-        }
-
-        .car::before {
-            content: '🚗';
-            position: absolute;
-            left: -10px;
-            font-size: 0.6em;
-        }
-
-        .car::after {
-            content: '🚗';
-            position: absolute;
-            right: -10px;
-            font-size: 0.6em;
-        }
-
-        .parking-lots {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 15px;
-            margin: 30px 0;
-            padding: 20px;
-            background: #f0f0f0;
-            border-radius: 15px;
-        }
-
-        .parking-slot {
-            width: 80px;
-            height: 80px;
-            border: 4px solid #333;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-            font-weight: bold;
-            background: #fff;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .parking-slot::before {
-            content: '🅿️';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            font-size: 0.5em;
-        }
-
-        .parking-slot:hover {
-            background: #e0e0e0;
-            transform: scale(1.05);
-        }
-
-        .parking-slot.correct {
-            background: #4caf50;
-            color: white;
-            border-color: #2e7d32;
-            animation: correctPulse 0.5s;
-        }
-
-        .parking-slot.wrong {
-            background: #f44336;
-            color: white;
-            border-color: #c62828;
-            animation: shake 0.5s;
-        }
-
-        .parking-slot.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        @keyframes correctPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        .message {
-            text-align: center;
-            font-size: 2em;
-            font-weight: bold;
-            margin: 20px 0;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .message.success {
-            color: #4caf50;
-            animation: bounce 0.5s;
-        }
-
-        .message.error {
-            color: #f44336;
-            animation: bounce 0.5s;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: white;
-        }
-
-        .btn-next {
-            background: #4caf50;
-        }
-
-        .btn-next:hover {
-            background: #45a049;
-            transform: scale(1.05);
-        }
-
-        .btn-reset {
-            background: #ff9800;
-        }
-
-        .btn-reset:hover {
-            background: #f57c00;
-            transform: scale(1.05);
-        }
-
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 30px;
-            background: #e0e0e0;
-            border-radius: 15px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-
-        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #4caf50, #8bc34a);
-            transition: width 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
+        }
+
+        .game-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 18px rgba(0, 0, 0, 0.14);
+            border-color: #ffb703;
+        }
+
+        .game-icon {
+            font-size: 2.8em;
+            margin-bottom: 8px;
+        }
+
+        .game-title {
+            font-size: 1.2em;
+            color: #5a3fc0;
+            margin-bottom: 6px;
             font-weight: bold;
         }
 
+        .game-title a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.2s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+
+        .game-title a:hover {
+            color: #fb8500;
+            transform: scale(1.03);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12);
+        }
+
+        .game-age {
+            font-size: 0.88em;
+            color: #fb8500;
+            font-weight: bold;
+            background: #fff4e6;
+            padding: 4px 12px;
+            border-radius: 999px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .game-description {
+            font-size: 0.92em;
+            color: #555;
+            margin-bottom: 12px;
+            flex-grow: 1;
+        }
+
+        .play-button {
+            background: linear-gradient(135deg, #4caf50 0%, #2e8b57 100%);
+            color: white;
+            padding: 9px 12px;
+            border-radius: 16px;
+            font-size: 0.98em;
+            font-weight: bold;
+            text-decoration: none;
+            text-align: center;
+            box-shadow: 0 5px 14px rgba(76, 175, 80, 0.26);
+            transition: transform 0.16s ease, box-shadow 0.16s ease;
+        }
+
+        .play-button:hover {
+            transform: scale(1.03);
+            box-shadow: 0 9px 20px rgba(76, 175, 80, 0.36);
+        }
+
+        .play-button:active {
+            transform: scale(0.98);
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 14px 12px;
+            text-align: center;
+            border-top: 4px solid #ffb703;
+            box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.1);
+        }
+
+        footer p {
+            color: #555;
+            margin: 3px 0;
+            font-size: 0.92em;
+        }
+
+        .badges {
+            font-weight: bold;
+            color: #5a3fc0;
+        }
+
+        /* ---------- Responsive Tweaks ---------- */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
+            header h1 {
+                font-size: 2em;
             }
 
-            .current-letter {
-                font-size: 3em;
+            header .tagline {
+                font-size: 1em;
             }
 
-            .car {
-                width: 100px;
-                height: 70px;
-                font-size: 2.5em;
+            .age-heading {
+                font-size: 1.4em;
             }
 
-            .parking-lots {
-                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            .game-title {
+                font-size: 1.2em;
             }
 
-            .parking-slot {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5em;
+            main {
+                margin: 18px auto 28px;
             }
 
-            .game-info {
+            .age-sections {
                 flex-direction: column;
-                align-items: stretch;
+            }
+
+            .age-section {
+                max-width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>🅿️ Alphabet Parking Game</h1>
-        
-        <div class="game-info">
-            <div class="score-board">
-                Score: <span id="score">0</span> | Progress: <span id="progress">0</span>/<span id="total">26</span>
-            </div>
-            <div class="level-selector">
-                <button class="level-btn active" data-level="1">Level 1 (A-F)</button>
-                <button class="level-btn" data-level="2">Level 2 (A-L)</button>
-                <button class="level-btn" data-level="3">Level 3 (A-Z)</button>
-            </div>
+    <!-- Header -->
+    <header>
+        <h1>🎮 Kids Educational Games</h1>
+        <p class="tagline">Learn • Play • Grow</p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="age-sections">
+            <!-- Ages 3–5 Section -->
+            <section class="age-section" aria-labelledby="age-3-5">
+                <h2 id="age-3-5" class="age-heading">Ages 3–5</h2>
+                <div class="games-grid">
+                    <!-- Alphabet Parking -->
+                    <article class="game-card">
+                        <span class="game-icon" aria-hidden="true">🅿️</span>
+                        <h3 class="game-title"><a href="alphabet-parking.html">Alphabet Parking</a></h3>
+                        <span class="game-age">Ages 3–5</span>
+                        <p class="game-description">
+                            Park the car in the matching letter spot. A playful way to learn the alphabet with bright visuals and friendly feedback.
+                        </p>
+                        <a class="play-button" href="alphabet-parking.html">Play</a>
+                    </article>
+
+                    <!-- Color Finder -->
+                    <article class="game-card">
+                        <span class="game-icon" aria-hidden="true">🎨</span>
+                        <h3 class="game-title"><a href="color-finder.html">Color Finder</a></h3>
+                        <span class="game-age">Ages 3–5</span>
+                        <p class="game-description">
+                            Spot and match colors in everyday objects. Gentle prompts help little learners recognize and name colors.
+                        </p>
+                        <a class="play-button" href="color-finder.html">Play</a>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Ages 5–7 Section -->
+            <section class="age-section" aria-labelledby="age-5-7">
+                <h2 id="age-5-7" class="age-heading">Ages 5–7</h2>
+                <div class="games-grid">
+                    <!-- Number Match -->
+                    <article class="game-card">
+                        <span class="game-icon" aria-hidden="true">🔢</span>
+                        <h3 class="game-title"><a href="number-match.html">Number Match</a></h3>
+                        <span class="game-age">Ages 5–7</span>
+                        <p class="game-description">
+                            Match numbers to quantities. Build counting skills with cheerful visuals and supportive cues.
+                        </p>
+                        <a class="play-button" href="number-match.html">Play</a>
+                    </article>
+
+                    <!-- Memory Match -->
+                    <article class="game-card">
+                        <span class="game-icon" aria-hidden="true">🧠</span>
+                        <h3 class="game-title"><a href="memory-match.html">Memory Match</a></h3>
+                        <span class="game-age">Ages 5–7</span>
+                        <p class="game-description">
+                            Flip cards to find pairs. Strengthen memory and focus with fun themes and kid-friendly pacing.
+                        </p>
+                        <a class="play-button" href="memory-match.html">Play</a>
+                    </article>
+                </div>
+            </section>
         </div>
+    </main>
 
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-        </div>
-
-        <div class="car-display">
-            <div class="current-letter" id="currentLetter">A</div>
-            <div class="car" id="car" draggable="true">A</div>
-            <p style="margin-top: 10px; color: #666;">Drag the car to the correct parking slot!</p>
-        </div>
-
-        <div class="message" id="message"></div>
-
-        <div class="parking-lots" id="parkingLots"></div>
-
-        <div class="controls">
-            <button class="btn btn-next" id="nextBtn" disabled>Next Letter</button>
-            <button class="btn btn-reset" id="resetBtn">Reset Game</button>
-        </div>
-    </div>
-
-    <script>
-        // Game state
-        let currentLevel = 1;
-        let score = 0;
-        let progress = 0;
-        let currentLetter = '';
-        let availableLetters = [];
-        let usedLetters = [];
-        let isCorrect = false;
-        let draggedElement = null;
-
-        // Level configurations
-        const levels = {
-            1: { start: 'A', end: 'F', total: 6 },
-            2: { start: 'A', end: 'L', total: 12 },
-            3: { start: 'A', end: 'Z', total: 26 }
-        };
-
-        // Initialize game
-        function initGame() {
-            score = 0;
-            progress = 0;
-            usedLetters = [];
-            isCorrect = false;
-            updateScore();
-            generateAvailableLetters();
-            createParkingSlots();
-            nextLetter();
-        }
-
-        // Generate available letters based on level
-        function generateAvailableLetters() {
-            const levelConfig = levels[currentLevel];
-            availableLetters = [];
-            for (let i = levelConfig.start.charCodeAt(0); i <= levelConfig.end.charCodeAt(0); i++) {
-                availableLetters.push(String.fromCharCode(i));
-            }
-            document.getElementById('total').textContent = levelConfig.total;
-        }
-
-        // Create parking slots
-        function createParkingSlots() {
-            const parkingLots = document.getElementById('parkingLots');
-            parkingLots.innerHTML = '';
-            
-            const levelConfig = levels[currentLevel];
-            for (let i = levelConfig.start.charCodeAt(0); i <= levelConfig.end.charCodeAt(0); i++) {
-                const letter = String.fromCharCode(i);
-                const slot = document.createElement('div');
-                slot.className = 'parking-slot';
-                slot.textContent = letter;
-                slot.dataset.letter = letter;
-                slot.addEventListener('click', () => handleSlotClick(letter));
-                slot.addEventListener('dragover', handleDragOver);
-                slot.addEventListener('drop', (e) => handleDrop(e, letter));
-                slot.addEventListener('dragleave', handleDragLeave);
-                parkingLots.appendChild(slot);
-            }
-        }
-
-        // Get next random letter
-        function nextLetter() {
-            const remaining = availableLetters.filter(l => !usedLetters.includes(l));
-            if (remaining.length === 0) {
-                showMessage('🎉 Congratulations! You completed the level!', 'success');
-                document.getElementById('nextBtn').disabled = true;
-                return;
-            }
-            
-            currentLetter = remaining[Math.floor(Math.random() * remaining.length)];
-            document.getElementById('currentLetter').textContent = currentLetter;
-            document.getElementById('car').textContent = currentLetter;
-            isCorrect = false;
-            document.getElementById('nextBtn').disabled = true;
-            document.getElementById('message').textContent = '';
-            document.getElementById('message').className = 'message';
-            
-            // Reset parking slots
-            document.querySelectorAll('.parking-slot').forEach(slot => {
-                slot.classList.remove('correct', 'wrong', 'disabled');
-            });
-
-            // Speak the letter
-            speakLetter(currentLetter);
-        }
-
-        // Handle slot click
-        function handleSlotClick(letter) {
-            if (isCorrect) return;
-            checkAnswer(letter);
-        }
-
-        // Handle drag over
-        function handleDragOver(e) {
-            e.preventDefault();
-            if (!isCorrect) {
-                e.currentTarget.style.background = '#ddd';
-            }
-        }
-
-        // Handle drag leave
-        function handleDragLeave(e) {
-            if (!e.currentTarget.classList.contains('correct') && !e.currentTarget.classList.contains('wrong')) {
-                e.currentTarget.style.background = '#fff';
-            }
-        }
-
-        // Handle drop
-        function handleDrop(e, letter) {
-            e.preventDefault();
-            e.currentTarget.style.background = '';
-            if (!isCorrect) {
-                checkAnswer(letter);
-            }
-        }
-
-        // Check answer
-        function checkAnswer(letter) {
-            const slots = document.querySelectorAll('.parking-slot');
-            const targetSlot = Array.from(slots).find(s => s.dataset.letter === letter);
-            
-            if (letter === currentLetter) {
-                // Correct answer
-                isCorrect = true;
-                score++;
-                progress++;
-                targetSlot.classList.add('correct');
-                showMessage('✅ Great Job!', 'success');
-                playSuccessSound();
-                document.getElementById('nextBtn').disabled = false;
-                usedLetters.push(currentLetter);
-                updateScore();
-            } else {
-                // Wrong answer
-                targetSlot.classList.add('wrong');
-                showMessage('❌ Try Again', 'error');
-                setTimeout(() => {
-                    targetSlot.classList.remove('wrong');
-                }, 500);
-            }
-        }
-
-        // Show message
-        function showMessage(text, type) {
-            const messageEl = document.getElementById('message');
-            messageEl.textContent = text;
-            messageEl.className = `message ${type}`;
-        }
-
-        // Play success sound (using Web Audio API)
-        function playSuccessSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = 523.25; // C5 note
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
-        }
-
-        // Speak letter using text-to-speech
-        function speakLetter(letter) {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(letter);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.8;
-                utterance.pitch = 1.2;
-                speechSynthesis.speak(utterance);
-            }
-        }
-
-        // Update score display
-        function updateScore() {
-            document.getElementById('score').textContent = score;
-            document.getElementById('progress').textContent = progress;
-            const levelConfig = levels[currentLevel];
-            const percentage = (progress / levelConfig.total) * 100;
-            document.getElementById('progressFill').style.width = percentage + '%';
-            document.getElementById('progressFill').textContent = Math.round(percentage) + '%';
-        }
-
-        // Car drag and drop handlers
-        document.getElementById('car').addEventListener('dragstart', (e) => {
-            draggedElement = e.target;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', e.target.innerHTML);
-        });
-
-        document.getElementById('car').addEventListener('dragend', (e) => {
-            draggedElement = null;
-        });
-
-        // Level selector
-        document.querySelectorAll('.level-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentLevel = parseInt(btn.dataset.level);
-                initGame();
-            });
-        });
-
-        // Next button
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            nextLetter();
-        });
-
-        // Reset button
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            initGame();
-        });
-
-        // Initialize on load
-        initGame();
-    </script>
+    <!-- Footer -->
+    <footer>
+        <p class="badges">🚫 No Ads | ✅ Safe for Kids</p>
+        <p>Made with care for playful learning</p>
+    </footer>
 </body>
 </html>

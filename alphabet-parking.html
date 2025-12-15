@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🅿️ Alphabet Parking Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 12px;
+            color: #333;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 8px 26px rgba(0, 0, 0, 0.18);
+            max-width: 980px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2.1em;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .score-board {
+            background: #f0f0f0;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 1.05em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .level-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .level-btn {
+            padding: 8px 14px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .level-btn:hover, .level-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .car-display {
+            text-align: center;
+            margin: 16px 0;
+            padding: 14px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .current-letter {
+            font-size: 3.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .car {
+            width: 110px;
+            height: 74px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            border-radius: 14px 14px 6px 6px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.7em;
+            font-weight: bold;
+            color: white;
+            cursor: grab;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            transition: transform 0.18s;
+            position: relative;
+            user-select: none;
+        }
+
+        .car:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+
+        .car::before {
+            content: '🚗';
+            position: absolute;
+            left: -10px;
+            font-size: 0.6em;
+        }
+
+        .car::after {
+            content: '🚗';
+            position: absolute;
+            right: -10px;
+            font-size: 0.6em;
+        }
+
+        .parking-lots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+            gap: 10px;
+            margin: 16px 0;
+            padding: 14px;
+            background: #f0f0f0;
+            border-radius: 12px;
+        }
+
+        .parking-slot {
+            width: 72px;
+            height: 72px;
+            border: 3px solid #333;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .parking-slot::before {
+            content: '🅿️';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            font-size: 0.5em;
+        }
+
+        .parking-slot:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .parking-slot.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #2e7d32;
+            animation: correctPulse 0.5s;
+        }
+
+        .parking-slot.wrong {
+            background: #f44336;
+            color: white;
+            border-color: #c62828;
+            animation: shake 0.5s;
+        }
+
+        .parking-slot.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .message {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 12px 0;
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message.success {
+            color: #4caf50;
+            animation: bounce 0.5s;
+        }
+
+        .message.error {
+            color: #f44336;
+            animation: bounce 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .btn-next {
+            background: #4caf50;
+        }
+
+        .btn-next:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .btn-reset {
+            background: #ff9800;
+        }
+
+        .btn-reset:hover {
+            background: #f57c00;
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 22px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            transition: width 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .current-letter {
+                font-size: 3em;
+            }
+
+        .car {
+            width: 92px;
+            height: 64px;
+            font-size: 2.2em;
+        }
+
+            .parking-lots {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            }
+
+            .parking-slot {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
+            }
+
+            .game-info {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div style="text-align:left;margin-bottom:12px;">
+            <a href="index.html" style="display:inline-block;padding:10px 16px;background:#fff;color:#667eea;border:2px solid #667eea;border-radius:12px;text-decoration:none;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,0.12);">← Back to Home</a>
+        </div>
+        <h1>🅿️ Alphabet Parking Game</h1>
+        
+        <div class="game-info">
+            <div class="score-board">
+                Score: <span id="score">0</span> | Progress: <span id="progress">0</span>/<span id="total">26</span>
+            </div>
+            <div class="level-selector">
+                <button class="level-btn active" data-level="1">Level 1 (A-F)</button>
+                <button class="level-btn" data-level="2">Level 2 (A-L)</button>
+                <button class="level-btn" data-level="3">Level 3 (A-Z)</button>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="car-display">
+            <div class="current-letter" id="currentLetter">A</div>
+            <div class="car" id="car" draggable="true">A</div>
+            <p style="margin-top: 10px; color: #666;">Drag the car to the correct parking slot!</p>
+        </div>
+
+        <div class="message" id="message"></div>
+
+        <div class="parking-lots" id="parkingLots"></div>
+
+        <div class="controls">
+            <button class="btn btn-next" id="nextBtn" disabled>Next Letter</button>
+            <button class="btn btn-reset" id="resetBtn">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let currentLevel = 1;
+        let score = 0;
+        let progress = 0;
+        let currentLetter = '';
+        let availableLetters = [];
+        let usedLetters = [];
+        let isCorrect = false;
+        let draggedElement = null;
+
+        // Level configurations
+        const levels = {
+            1: { start: 'A', end: 'F', total: 6 },
+            2: { start: 'A', end: 'L', total: 12 },
+            3: { start: 'A', end: 'Z', total: 26 }
+        };
+
+        // Initialize game
+        function initGame() {
+            score = 0;
+            progress = 0;
+            usedLetters = [];
+            isCorrect = false;
+            updateScore();
+            generateAvailableLetters();
+            createParkingSlots();
+            nextLetter();
+        }
+
+        // Generate available letters based on level
+        function generateAvailableLetters() {
+            const levelConfig = levels[currentLevel];
+            availableLetters = [];
+            for (let i = levelConfig.start.charCodeAt(0); i <= levelConfig.end.charCodeAt(0); i++) {
+                availableLetters.push(String.fromCharCode(i));
+            }
+            document.getElementById('total').textContent = levelConfig.total;
+        }
+
+        // Create parking slots
+        function createParkingSlots() {
+            const parkingLots = document.getElementById('parkingLots');
+            parkingLots.innerHTML = '';
+            
+            const levelConfig = levels[currentLevel];
+            for (let i = levelConfig.start.charCodeAt(0); i <= levelConfig.end.charCodeAt(0); i++) {
+                const letter = String.fromCharCode(i);
+                const slot = document.createElement('div');
+                slot.className = 'parking-slot';
+                slot.textContent = letter;
+                slot.dataset.letter = letter;
+                slot.addEventListener('click', () => handleSlotClick(letter));
+                slot.addEventListener('dragover', handleDragOver);
+                slot.addEventListener('drop', (e) => handleDrop(e, letter));
+                slot.addEventListener('dragleave', handleDragLeave);
+                parkingLots.appendChild(slot);
+            }
+        }
+
+        // Get next random letter
+        function nextLetter() {
+            const remaining = availableLetters.filter(l => !usedLetters.includes(l));
+            if (remaining.length === 0) {
+                showMessage('🎉 Congratulations! You completed the level!', 'success');
+                document.getElementById('nextBtn').disabled = true;
+                return;
+            }
+            
+            currentLetter = remaining[Math.floor(Math.random() * remaining.length)];
+            document.getElementById('currentLetter').textContent = currentLetter;
+            document.getElementById('car').textContent = currentLetter;
+            isCorrect = false;
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('message').textContent = '';
+            document.getElementById('message').className = 'message';
+            
+            // Reset parking slots
+            document.querySelectorAll('.parking-slot').forEach(slot => {
+                slot.classList.remove('correct', 'wrong', 'disabled');
+            });
+
+            // Speak the letter
+            speakLetter(currentLetter);
+        }
+
+        // Handle slot click
+        function handleSlotClick(letter) {
+            if (isCorrect) return;
+            checkAnswer(letter);
+        }
+
+        // Handle drag over
+        function handleDragOver(e) {
+            e.preventDefault();
+            if (!isCorrect) {
+                e.currentTarget.style.background = '#ddd';
+            }
+        }
+
+        // Handle drag leave
+        function handleDragLeave(e) {
+            if (!e.currentTarget.classList.contains('correct') && !e.currentTarget.classList.contains('wrong')) {
+                e.currentTarget.style.background = '#fff';
+            }
+        }
+
+        // Handle drop
+        function handleDrop(e, letter) {
+            e.preventDefault();
+            e.currentTarget.style.background = '';
+            if (!isCorrect) {
+                checkAnswer(letter);
+            }
+        }
+
+        // Check answer
+        function checkAnswer(letter) {
+            const slots = document.querySelectorAll('.parking-slot');
+            const targetSlot = Array.from(slots).find(s => s.dataset.letter === letter);
+            
+            if (letter === currentLetter) {
+                // Correct answer
+                isCorrect = true;
+                score++;
+                progress++;
+                targetSlot.classList.add('correct');
+                showMessage('✅ Great Job!', 'success');
+                playSuccessSound();
+                document.getElementById('nextBtn').disabled = false;
+                usedLetters.push(currentLetter);
+                updateScore();
+            } else {
+                // Wrong answer
+                targetSlot.classList.add('wrong');
+                showMessage('❌ Try Again', 'error');
+                setTimeout(() => {
+                    targetSlot.classList.remove('wrong');
+                }, 500);
+            }
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+        }
+
+        // Play success sound (using Web Audio API)
+        function playSuccessSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 523.25; // C5 note
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // Speak letter using text-to-speech
+        function speakLetter(letter) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(letter);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                utterance.pitch = 1.2;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Update score display
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('progress').textContent = progress;
+            const levelConfig = levels[currentLevel];
+            const percentage = (progress / levelConfig.total) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressFill').textContent = Math.round(percentage) + '%';
+        }
+
+        // Car drag and drop handlers
+        document.getElementById('car').addEventListener('dragstart', (e) => {
+            draggedElement = e.target;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.innerHTML);
+        });
+
+        document.getElementById('car').addEventListener('dragend', (e) => {
+            draggedElement = null;
+        });
+
+        // Level selector
+        document.querySelectorAll('.level-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLevel = parseInt(btn.dataset.level);
+                initGame();
+            });
+        });
+
+        // Next button
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            nextLetter();
+        });
+
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            initGame();
+        });
+
+        // Initialize on load
+        initGame();
+    </script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Color Finder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Comic Sans MS", "Arial", sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 1100px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
+            padding: 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 2.4em;
+            color: #ff7a59;
+            text-shadow: 1px 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .header p {
+            color: #555;
+            margin-top: 6px;
+            font-size: 1.1em;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 10px 0 16px;
+        }
+
+        .score-box, .target-box {
+            background: #f7f7f7;
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+            color: #ff7a59;
+        }
+
+        .target-swatch {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .swatch {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+        }
+
+        .message {
+            font-size: 1.2em;
+            font-weight: bold;
+            min-height: 28px;
+            color: #333;
+        }
+
+        .message.success {
+            color: #2e8b57;
+        }
+
+        .message.error {
+            color: #d32f2f;
+        }
+
+        .palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin: 16px 0 10px;
+        }
+
+        .card {
+            border-radius: 14px;
+            background: #fefefe;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.correct {
+            border-color: #2e8b57;
+            animation: pop 0.35s ease;
+        }
+
+        .card.wrong {
+            border-color: #d32f2f;
+            animation: shake 0.35s ease;
+        }
+
+        .card .swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            margin: 0 auto 8px;
+        }
+
+        .card .name {
+            font-size: 1.05em;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        .btn-primary { background: linear-gradient(135deg, #ff7a59, #ff9966); box-shadow: 0 6px 16px rgba(255, 122, 89, 0.3); }
+        .btn-primary:hover { box-shadow: 0 10px 20px rgba(255, 122, 89, 0.4); }
+
+        .btn-ghost { background: #fff; color: #ff7a59; border: 2px solid #ff7a59; }
+        .btn-ghost:hover { box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1); }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .palette { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div style="text-align:left;margin-bottom:12px;">
+            <a href="index.html" style="display:inline-block;padding:10px 16px;background:#fff;color:#ff7a59;border:2px solid #ff7a59;border-radius:12px;text-decoration:none;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,0.12);">← Back to Home</a>
+        </div>
+        <div class="header">
+            <h1>🎨 Color Finder</h1>
+            <p>Match the color name to the right swatch! Ages 3–7</p>
+        </div>
+
+        <div class="top-bar">
+            <div class="score-box">Score: <span id="score">0</span></div>
+            <div class="target-box">
+                <div class="target-swatch">
+                    <span>Find:</span>
+                    <span class="swatch" id="targetSwatch"></span>
+                    <span id="targetName" style="font-weight:bold;color:#ff7a59;"></span>
+                </div>
+            </div>
+            <div class="message" id="message"></div>
+        </div>
+
+        <div class="palette" id="palette"></div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="nextBtn">Next Color</button>
+            <button class="btn btn-ghost" id="resetBtn">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        const colors = [
+            { name: "Red", value: "#e63946" },
+            { name: "Orange", value: "#ff9f1c" },
+            { name: "Yellow", value: "#ffd60a" },
+            { name: "Green", value: "#2a9d8f" },
+            { name: "Blue", value: "#3a86ff" },
+            { name: "Purple", value: "#9d4edd" },
+            { name: "Pink", value: "#ff6bcb" },
+            { name: "Brown", value: "#8d5524" },
+            { name: "Gray", value: "#8d99ae" }
+        ];
+
+        let currentTarget = null;
+        let score = 0;
+
+        const paletteEl = document.getElementById("palette");
+        const targetSwatchEl = document.getElementById("targetSwatch");
+        const targetNameEl = document.getElementById("targetName");
+        const messageEl = document.getElementById("message");
+        const scoreEl = document.getElementById("score");
+
+        function shuffle(array) {
+            return array
+                .map(value => ({ value, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(({ value }) => value);
+        }
+
+        function pickTarget() {
+            const pool = shuffle(colors).slice(0, 6);
+            currentTarget = pool[Math.floor(Math.random() * pool.length)];
+            renderPalette(pool);
+            renderTarget();
+            messageEl.textContent = "";
+            messageEl.className = "message";
+        }
+
+        function renderTarget() {
+            targetSwatchEl.style.background = currentTarget.value;
+            targetNameEl.textContent = currentTarget.name;
+        }
+
+        function renderPalette(pool) {
+            paletteEl.innerHTML = "";
+            pool.forEach(color => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <div class="swatch" style="background:${color.value}"></div>
+                    <div class="name">${color.name}</div>
+                `;
+                card.addEventListener("click", () => handleGuess(card, color));
+                paletteEl.appendChild(card);
+            });
+        }
+
+        function handleGuess(card, color) {
+            if (!currentTarget) return;
+            const isCorrect = color.name === currentTarget.name;
+            card.classList.remove("correct", "wrong");
+            void card.offsetWidth; // force reflow to restart animation
+            if (isCorrect) {
+                score += 1;
+                scoreEl.textContent = score;
+                card.classList.add("correct");
+                messageEl.textContent = "Great job!";
+                messageEl.className = "message success";
+                setTimeout(pickTarget, 700);
+            } else {
+                card.classList.add("wrong");
+                messageEl.textContent = "Try again!";
+                messageEl.className = "message error";
+            }
+        }
+
+        document.getElementById("nextBtn").addEventListener("click", pickTarget);
+        document.getElementById("resetBtn").addEventListener("click", () => {
+            score = 0;
+            scoreEl.textContent = score;
+            pickTarget();
+        });
+
+        // Start game
+        pickTarget();
+    </script>
+</body>
+</html>
+
